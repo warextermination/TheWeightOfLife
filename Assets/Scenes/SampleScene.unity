@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 34797381}
   - component: {fileID: 34797387}
   - component: {fileID: 34797386}
+  - component: {fileID: 34797388}
   m_Layer: 0
   m_Name: Victoria
   m_TagString: Player
@@ -336,7 +337,19 @@ MonoBehaviour:
     m_ActionId: 741f4e06-993d-492d-b600-fd1132320d84
     m_ActionName: Player/Move[/DualShock4GamepadHID/leftStick,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 34797388}
+        m_TargetAssemblyTypeName: RotarArma, Assembly-CSharp
+        m_MethodName: Gun
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: fb170189-af94-4ede-a16e-4b5e28d4842f
     m_ActionName: Player/Look[/DualShock4GamepadHID/rightStick,/Mouse/delta,/Touchscreen/delta,/Pen/delta]
   - m_PersistentCalls:
@@ -436,6 +449,20 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &34797388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34797380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84a3a0daaba21ec4eb6c2689eca36a15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arma: {fileID: 1094029589}
+  returnTime: 90
 --- !u!1 &48767384
 GameObject:
   m_ObjectHideFlags: 0
@@ -2004,7 +2031,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1094029589}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 13043cd4ff4a77e408774d5abb5ec94f, type: 3}
   m_Name: 
