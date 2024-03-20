@@ -3,8 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - Suelo
+  tags: []
   layers:
   - Default
   - TransparentFX
@@ -12,7 +11,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - balanceo
   - 
   - 
   - 
@@ -39,12 +38,6 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Fondo
-    uniqueID: 1280326053
-    locked: 0
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: Tilemap
-    uniqueID: 1748282969
     locked: 0
