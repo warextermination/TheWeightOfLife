@@ -7,16 +7,23 @@ using UnityEngine.InputSystem;
 public class Movimiento : MonoBehaviour
 {
     public Gravedad gravity;
-    public Dash dash;
     //Movimiento horizontal
     public float velocidad = 5.0f;
     public GameObject Victoria;
 
     public Rigidbody2D rb;
-    public float fuerzaSalto = 10f;
+    private bool puedeSaltar = true;
+    private bool segundoSalto = true;
+    private float fuerzaSalto = 10f;
+    private float Gravedad = 5f;
+    private float velocityY;
 
-    private bool puedeSaltar = false;
-    private bool segundoSalto = false;
+
+    [SerializeField] private float floorheight = 0.5f;
+    [SerializeField] Transform feet;
+    [SerializeField] ContactFilter2D contactFilter;
+    bool isGrounded;
+    Collider2D[] results = new Collider2D[1];
 
     public bool jumping = false;
 
@@ -51,24 +58,32 @@ public class Movimiento : MonoBehaviour
         if (Input.GetKey(KeyCode.A) || (Gamepad.current != null && Gamepad.current.leftStick.left.isPressed))
         {
             Victoria.transform.position += Vector3.left * Time.deltaTime * velocidad;
-            dash.orientation = -1;
 
         }
         else if (Input.GetKey(KeyCode.D) || (Gamepad.current != null && Gamepad.current.leftStick.right.isPressed))
         {
             Victoria.transform.position += Vector3.right * Time.deltaTime * velocidad;
-            dash.orientation = 1;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) || (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame) && (puedeSaltar))
+
+        if (Input.GetKeyDown(KeyCode.J) && isGrounded)
         {
-           Saltar();
+            velocityY = Mathf.Sqrt(fuerzaSalto * -2) * (Physics2D.gravity.y * Gravedad);
+        }
+        velocityY += Physics2D.gravity.y * Gravedad * Time.deltaTime;
+
+        if (Physics2D.OverlapBox(feet.position, feet.localScale, 0, contactFilter, results) > 0 && velocityY < 0)
+        {
+            velocityY = 0;
+            Vector2 surface = Physics2D.ClosestPoint(transform.position, results[0]) + Vector2.up * floorheight;
+            Victoria.transform.position = new Vector3(transform.position.x, surface.y, transform.position.z);
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
         }
 
-    }
-
-    void Saltar()
-    {
-        rb.velocity = new Vector2(rb.velocity.x, fuerzaSalto);
+        Victoria.transform.Translate(new Vector3(0, velocityY, 0) * Time.deltaTime);
     }
 }

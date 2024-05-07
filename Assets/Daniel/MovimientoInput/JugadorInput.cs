@@ -1,57 +1,99 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 public class JugadorInput : MonoBehaviour
 {
+    public Rigidbody2D rb;
 
+    public GameObject SpritesVic;
+    public SpriteRenderer spriteRenderer;
+    public Bala bala;
+
+    //Variables Dash
     [Header("Dash")][SerializeField] private float _dashingTime = 0.2f;
-
     [SerializeField] private float _dashForce = 50f;
     [SerializeField] private float _timeCanDash = 2f;
     private bool _canDash = true;
     private bool _dashing = false;
 
-    public Rigidbody2D rb;
-
-    private float horizontal;
-    private float velocidad = 5;
-    private float salto = 10f;
-    
-    private bool puedeSaltar = true;
-    private bool segundoSalto = true;
-
-    public SpriteRenderer spriteRenderer;
+    [Header("Velocidad de movimiento")]
+    //Variable que indica la velocidad horizontal
+    static public float horizontal;
+    //Variable para la orientación Vertical
     public int orientationY = 1;
-    Vector2 VelocidadNormal;
 
-    public int OrientationY = 1;
+    //Velocidad al correr
+    [SerializeField] private float velocidad = 6;
 
+    //Variables Salto
+    [Header("Salto")]
+    public bool puedeSaltar = true;
+    public bool segundoSalto = true;
+    [SerializeField] private float fuerzaSalto = 10f;
+    public GameObject feet;
+
+    //Foco de la cámara
+    [Header("Para mover la cámara")]
+    public GameObject Foco;
+    private bool moviendoC = false;
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Suelo"))
         {
-            puedeSaltar = true;
-            segundoSalto = true;
+            _dashing = false;
         }
+        
     }
     void Update()
     {
-        rb.velocity = new Vector2(horizontal * velocidad, rb.velocity.y);
+        
+        //movimiento
+        transform.Translate(Vector3.right * horizontal * velocidad * Time.deltaTime);
+        
+        //Espejear Sprite
+        if (horizontal < 0)
+        {
+            spriteRenderer.flipX = true;
+            RotarArma.rotable = true;
+        }
+        else if (horizontal > 0)
+        {
+            spriteRenderer.flipX = false;
+            RotarArma.rotable = false;
+        }
 
+
+        //Dash
         if (_dashing)
         {
-            rb.velocity = new Vector2(horizontal * _dashForce * 2, rb.velocity.y);
+            transform.Translate(Vector3.right * horizontal * _dashForce * 2 * Time.deltaTime);
         }
-    }
 
+        if (moviendoC)
+        {
+            if (orientationY < 0)
+            {
+                Foco.transform.position += Vector3.down * 10f * Time.deltaTime;
+            }
+            else
+            {
+                Foco.transform.position += Vector3.up * 10f * Time.deltaTime;
+            }
+        }
+
+    }
     public void Salto(InputAction.CallbackContext context)
     {
         if(context.performed && (puedeSaltar || segundoSalto))
         {
-            rb.velocity = new Vector2(rb.velocity.x, salto * orientationY);
-            if(puedeSaltar == false)
+            rb.velocity = new Vector2(rb.velocity.x, fuerzaSalto * orientationY);
+            if (puedeSaltar == false)
             {
                 segundoSalto = false;
             }
@@ -76,7 +118,9 @@ public class JugadorInput : MonoBehaviour
         {
             orientationY *= -1;
             rb.gravityScale *= -1;
+            SpritesVic.transform.localScale = new Vector3(1, 1 * orientationY, 1);
             spriteRenderer.flipY = !spriteRenderer.flipY;
+            StartCoroutine(moverCamarita());
         }
     }
 
@@ -84,19 +128,34 @@ public class JugadorInput : MonoBehaviour
     {
         if (context.performed && _canDash)
         {
-            VelocidadNormal = rb.velocity;
             StartCoroutine(ActionDash());
         }
     }
     private IEnumerator ActionDash()
     {
-        VelocidadNormal = rb.velocity;
         _canDash = false;
         _dashing = true;
         yield return new WaitForSeconds(_dashingTime);
         _dashing = false;
-        rb.velocity = VelocidadNormal;
         yield return new WaitForSeconds(_timeCanDash);
         _canDash = true;
+    }
+    public void StopMovement(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            velocidad = 0;
+        }
+        else
+        {
+            velocidad = 6;
+        }
+    }
+
+    private IEnumerator moverCamarita()
+    {
+        moviendoC = true;
+        yield return new WaitForSeconds(0.5f);
+        moviendoC = false;
     }
 }

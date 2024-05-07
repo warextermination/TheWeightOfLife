@@ -5,9 +5,6 @@ using UnityEngine.InputSystem;
 
 public class Disparo : MonoBehaviour
 {
-    public Movimiento salto;
-    public Gravedad gravity;
-
     public GameObject bala1;
     public GameObject Auxbala1;
 
@@ -19,10 +16,8 @@ public class Disparo : MonoBehaviour
 
     private bool posibleDisparo = true;
 
-    public float fuerza = -18f;
+    public float fuerza = -3f;
     public Vector3 direccionDisparo;
-
-    public Rigidbody2D rbBala;
 
     void Update()
     {
@@ -36,7 +31,7 @@ public class Disparo : MonoBehaviour
         }
         if (!posibleDisparo)
         {
-            Auxbala1.transform.position += direccionDisparo * fuerza * Time.deltaTime;
+            Auxbala1.transform.Translate(direccionDisparo * fuerza * Time.deltaTime);
         }
 
     }
